@@ -31,6 +31,7 @@ use std::fmt;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+use std::str::FromStr;
 
 /// Enum of the vairous Container Types.
 /// Does not contain Unknown. Methods throw error if container cannot be identified.
@@ -47,6 +48,8 @@ pub enum ContainerType {
     MXF,
     M2TS,
     TivoPS,
+    McPoodlesRaw,
+    ES,
 }
 
 impl ContainerType {
@@ -261,19 +264,44 @@ impl ContainerType {
 impl fmt::Display for ContainerType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match *self {
-            ContainerType::MKV => "Matroska (MKV)",
-            ContainerType::ASF => "Advanced Systems Format (ASF)",
-            ContainerType::GXF => "General Exchange Format (GXF)",
-            ContainerType::WTV => "Windows Recorded TV Show (WTV)",
-            ContainerType::RCWT => "Raw Captions With Time (RCWT)",
-            ContainerType::MP4 => "MPEG-4 Part 14 (MP4)",
-            ContainerType::TS => "MPEG Transport Stream (TS)",
-            ContainerType::M2TS => "MPEG-2 Transport Stream (M2TS)",
-            ContainerType::PS => "Program Stream (PS)",
-            ContainerType::TivoPS => "Tivo Program Stream (Tivo PS)",
-            ContainerType::MXF => "Material Exchange Format (MXF)",
+            Self::MKV => "Matroska (MKV)",
+            Self::ASF => "Advanced Systems Format (ASF)",
+            Self::GXF => "General Exchange Format (GXF)",
+            Self::WTV => "Windows Recorded TV Show (WTV)",
+            Self::RCWT => "Raw Captions With Time (RCWT)",
+            Self::MP4 => "MPEG-4 Part 14 (MP4)",
+            Self::TS => "MPEG Transport Stream (TS)",
+            Self::M2TS => "MPEG-2 Transport Stream (M2TS)",
+            Self::PS => "Program Stream (PS)",
+            Self::TivoPS => "Tivo Program Stream (Tivo PS)",
+            Self::MXF => "Material Exchange Format (MXF)",
+            Self::McPoodlesRaw => "McPoodle's Raw File",
+            Self::ES => "Elementary Stream (ES)",
         };
         write!(f, "{}", name)
+    }
+}
+
+impl FromStr for ContainerType {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "mkv" => Ok(Self::MKV),
+            "asf" => Ok(Self::ASF),
+            "gxf" => Ok(Self::GXF),
+            "wtv" => Ok(Self::WTV),
+            "rcwt" | "bin" => Ok(Self::RCWT),
+            "mp4" => Ok(Self::MP4),
+            "ts" => Ok(Self::TS),
+            "m2ts" => Ok(Self::M2TS),
+            "ps" => Ok(Self::PS),
+            "tivops" => Ok(Self::TivoPS),
+            "mxf" => Ok(Self::MXF),
+            "raw" => Ok(Self::McPoodlesRaw),
+            "es" => Ok(Self::ES),
+            _ => Err(format!("Failed to parse {}", s)),
+        }
     }
 }
 

@@ -2,7 +2,7 @@
 * Introduction
 Small Crate to infer various media containers.
 Designed for use with CCExtractor.
-Works by reading [[https://en.wikipedia.org/wiki/List_of_file_signatures#:~:text=This%20is%20a%20list%20of,its%20contents%20will%20be%20unintelligible.][magic-bytes]]
+Works by reading Magic Bytes.
 
 * Supported Containers
 - [X] MKV
@@ -10,9 +10,10 @@ Works by reading [[https://en.wikipedia.org/wiki/List_of_file_signatures#:~:text
 - [X] GXF
 - [X] WTV
 - [X] RCWT
-- [ ] MP4
-- [ ] TS
-- [ ] PS
+- [X] MP4
+- [X] TS
+- [X] PS
+- [X] MXF
 
 * Examples
 ** Get Container type from starting bytes
@@ -38,3 +39,7 @@ use std::fs::File;
 let mut file = File::open("some.abc").unwrap();
 let kind = media_infer::ContainerType::from_file(&mut file);
 #+end_src
+
+* Resources
+- [[https://www.garykessler.net/library/file_sigs.html]]
+- [[https://en.wikipedia.org/wiki/List_of_file_signatures]]

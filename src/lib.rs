@@ -27,6 +27,7 @@ let mut file = File::open("some.abc").unwrap();
 let kind = media_infer::ContainerType::from_file(&mut file);
 ```
  */
+use std::fmt;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -235,6 +236,23 @@ impl ContainerType {
         }
 
         false
+    }
+}
+
+impl fmt::Display for ContainerType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match *self {
+            ContainerType::MKV => "MKV",
+            ContainerType::ASF => "ASF",
+            ContainerType::GXF => "GXF",
+            ContainerType::WTV => "WTV",
+            ContainerType::RCWT => "RCWT",
+            ContainerType::MP4 => "MP4",
+            ContainerType::TS => "TS",
+            ContainerType::PS => "PS",
+            ContainerType::MXF => "MXF",
+        };
+        write!(f, "{}", name)
     }
 }
 

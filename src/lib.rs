@@ -45,6 +45,8 @@ pub enum ContainerType {
     TS,
     PS,
     MXF,
+    M2TS,
+    TivoPS,
 }
 
 impl ContainerType {
@@ -67,8 +69,12 @@ impl ContainerType {
             return Ok(ContainerType::MXF);
         } else if Self::check_ts(&buffer) {
             return Ok(ContainerType::TS);
+        } else if Self::check_m2ts(&buffer) {
+            return Ok(ContainerType::M2TS);
         } else if Self::check_ps(&buffer) {
             return Ok(ContainerType::PS);
+        } else if Self::check_tivo_ps(&buffer) {
+            return Ok(ContainerType::TivoPS);
         }
 
         Err("Could Not Identify".to_string())
@@ -194,26 +200,29 @@ impl ContainerType {
     /// Currently checks for 8 sync bytes.
     fn check_ts(buffer: &[u8]) -> bool {
         const TS_MAGIC_POS: usize = 188;
+        const MAGIC_BYTE: u8 = 0x47;
+        const SYNC_BYTES_TO_CHECK: usize = 8;
+
+        if buffer.len() > TS_MAGIC_POS * SYNC_BYTES_TO_CHECK {
+            return (0..TS_MAGIC_POS).any(|x| {
+                (0..SYNC_BYTES_TO_CHECK).all(|y| buffer[x + y * TS_MAGIC_POS] == MAGIC_BYTE)
+            });
+        }
+
+        false
+    }
+
+    /// Checks for M2TS
+    /// Seperating from TS seemed better.
+    fn check_m2ts(buffer: &[u8]) -> bool {
         const M2TS_MAGIC_POS: usize = 192;
         const MAGIC_BYTE: u8 = 0x47;
         const SYNC_BYTES_TO_CHECK: usize = 8;
 
-        // Check for TS
-        if buffer.len() > TS_MAGIC_POS * SYNC_BYTES_TO_CHECK
-            && (0..TS_MAGIC_POS).any(|x| {
-                (0..SYNC_BYTES_TO_CHECK).all(|y| buffer[x + y * TS_MAGIC_POS] == MAGIC_BYTE)
-            })
-        {
-            return true;
-        }
-
-        // Check for M2TS
-        if buffer.len() > M2TS_MAGIC_POS * SYNC_BYTES_TO_CHECK + 4
-            && (0..M2TS_MAGIC_POS).any(|x| {
+        if buffer.len() > M2TS_MAGIC_POS * SYNC_BYTES_TO_CHECK + 4 {
+            return (0..M2TS_MAGIC_POS).any(|x| {
                 (0..SYNC_BYTES_TO_CHECK).all(|y| buffer[x + 4 + M2TS_MAGIC_POS * y] == MAGIC_BYTE)
-            })
-        {
-            return true;
+            });
         }
 
         false
@@ -237,20 +246,34 @@ impl ContainerType {
 
         false
     }
+
+    fn check_tivo_ps(buffer: &[u8]) -> bool {
+        const MAGIC_BYTES: [u8; 4] = [b'T', b'i', b'V', b'o'];
+
+        let len = buffer.len();
+        if len >= MAGIC_BYTES.len() {
+            return (0..(len - MAGIC_BYTES.len()))
+                .any(|x| MAGIC_BYTES == buffer[x..(x + MAGIC_BYTES.len())]);
+        }
+
+        false
+    }
 }
 
 impl fmt::Display for ContainerType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match *self {
-            ContainerType::MKV => "MKV",
-            ContainerType::ASF => "ASF",
-            ContainerType::GXF => "GXF",
-            ContainerType::WTV => "WTV",
-            ContainerType::RCWT => "RCWT",
-            ContainerType::MP4 => "MP4",
-            ContainerType::TS => "TS",
-            ContainerType::PS => "PS",
-            ContainerType::MXF => "MXF",
+            ContainerType::MKV => "Matroska (MKV)",
+            ContainerType::ASF => "Advanced Systems Format (ASF)",
+            ContainerType::GXF => "General Exchange Format (GXF)",
+            ContainerType::WTV => "Windows Recorded TV Show (WTV)",
+            ContainerType::RCWT => "Raw Captions With Time (RCWT)",
+            ContainerType::MP4 => "MPEG-4 Part 14 (MP4)",
+            ContainerType::TS => "MPEG Transport Stream (TS)",
+            ContainerType::M2TS => "MPEG-2 Transport Stream (M2TS)",
+            ContainerType::PS => "Program Stream (PS)",
+            ContainerType::TivoPS => "Tivo Program Stream (Tivo PS)",
+            ContainerType::MXF => "Material Exchange Format (MXF)",
         };
         write!(f, "{}", name)
     }

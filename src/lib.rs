@@ -243,18 +243,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn empty() {
-        let t1 = ContainerType::from_bytes(&[]);
-        assert!(t1.is_err());
-    }
-
-    #[test]
-    fn garbage() {
-        let t = ContainerType::from_bytes(&[0; 1024 * 1024]);
-        assert!(t.is_err());
-    }
-
-    #[test]
     fn asf() {
         let t = ContainerType::check_asf(&[0x30, 0x26, 0xb2, 0x75, 0x34, 0]);
         assert!(t);

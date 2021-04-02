@@ -78,6 +78,8 @@ impl ContainerType {
             return Ok(ContainerType::PS);
         } else if Self::check_tivo_ps(&buffer) {
             return Ok(ContainerType::TivoPS);
+        } else if Self::check_es(&buffer) {
+            return Ok(ContainerType::ES);
         }
 
         Err("Could Not Identify".to_string())
@@ -250,6 +252,7 @@ impl ContainerType {
         false
     }
 
+    /// Checks for Tivo Program Stream
     fn check_tivo_ps(buffer: &[u8]) -> bool {
         const MAGIC_BYTES: [u8; 4] = [b'T', b'i', b'V', b'o'];
 
@@ -257,6 +260,16 @@ impl ContainerType {
             return MAGIC_BYTES == buffer[0..MAGIC_BYTES.len()];
         }
 
+        false
+    }
+
+    /// Checks for Elementary Stream
+    fn check_es(buffer: &[u8]) -> bool {
+        const MAGIC_BYTES: [u8; 4] = [0, 0, 1, 0xB3];
+
+        if buffer.len() >= MAGIC_BYTES.len() {
+            return MAGIC_BYTES == buffer[0..MAGIC_BYTES.len()];
+        }
         false
     }
 }
@@ -397,6 +410,12 @@ mod tests {
     #[test]
     fn tivo_ps() {
         let t = ContainerType::check_tivo_ps(&[b'T', b'i', b'V', b'o', 0, 0]);
+        assert!(t);
+    }
+
+    #[test]
+    fn es() {
+        let t = ContainerType::check_es(&[0, 0, 1, 0xB3, 0, 0]);
         assert!(t);
     }
 }

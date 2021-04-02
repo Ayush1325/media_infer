@@ -114,3 +114,10 @@ fn test_tivo_ps() {
     let t = ContainerType::from_bytes(&buffer);
     assert_eq!(t, Ok(ContainerType::TivoPS));
 }
+
+#[test]
+fn test_es_bytes() {
+    let buffer = [0, 0, 1, 0xB3, 0, 0];
+    let t = ContainerType::from_bytes(&buffer);
+    assert_eq!(t, Ok(ContainerType::ES));
+}

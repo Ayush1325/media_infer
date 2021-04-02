@@ -83,13 +83,16 @@ fn test_ts_bytes() {
     }
     let t = ContainerType::from_bytes(&buffer);
     assert_eq!(t, Ok(ContainerType::TS));
+}
 
+#[test]
+fn test_m2ts_bytes() {
     let mut buffer = [0; 192 * 9];
     for i in 0..8 {
         buffer[2 + 4 + i * 192] = 0x47;
     }
     let t = ContainerType::from_bytes(&buffer);
-    assert_eq!(t, Ok(ContainerType::TS));
+    assert_eq!(t, Ok(ContainerType::M2TS));
 }
 
 #[test]
@@ -103,4 +106,11 @@ fn test_ps_bytes() {
     buffer[1001] = 0xBA;
     let t = ContainerType::from_bytes(&buffer);
     assert_eq!(t, Ok(ContainerType::PS));
+}
+
+#[test]
+fn test_tivo_ps() {
+    let buffer = [b'T', b'i', b'V', b'o', 0];
+    let t = ContainerType::from_bytes(&buffer);
+    assert_eq!(t, Ok(ContainerType::TivoPS));
 }

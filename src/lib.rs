@@ -250,10 +250,8 @@ impl ContainerType {
     fn check_tivo_ps(buffer: &[u8]) -> bool {
         const MAGIC_BYTES: [u8; 4] = [b'T', b'i', b'V', b'o'];
 
-        let len = buffer.len();
-        if len >= MAGIC_BYTES.len() {
-            return (0..(len - MAGIC_BYTES.len()))
-                .any(|x| MAGIC_BYTES == buffer[x..(x + MAGIC_BYTES.len())]);
+        if buffer.len() >= MAGIC_BYTES.len() {
+            return MAGIC_BYTES == buffer[0..MAGIC_BYTES.len()];
         }
 
         false
@@ -344,12 +342,15 @@ mod tests {
         }
         let t = ContainerType::check_ts(&buffer);
         assert!(t);
+    }
 
+    #[test]
+    fn m2ts() {
         let mut buffer = [0; 192 * 9];
         for i in 0..8 {
             buffer[2 + 4 + i * 192] = 0x47;
         }
-        let t = ContainerType::check_ts(&buffer);
+        let t = ContainerType::check_m2ts(&buffer);
         assert!(t);
     }
 
@@ -362,6 +363,12 @@ mod tests {
         buffer[1000] = 0x01;
         buffer[1001] = 0xBA;
         let t = ContainerType::check_ps(&buffer);
+        assert!(t);
+    }
+
+    #[test]
+    fn tivo_ps() {
+        let t = ContainerType::check_tivo_ps(&[b'T', b'i', b'V', b'o', 0, 0]);
         assert!(t);
     }
 }

@@ -12,7 +12,9 @@ Works by reading Magic Bytes.
 - [X] RCWT
 - [X] MP4
 - [X] TS
+- [X] M2TS
 - [X] PS
+- [X] Tivo PS
 - [X] MXF
 
 * Examples

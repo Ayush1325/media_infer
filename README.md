@@ -1,9 +1,8 @@
-#+TITLE: Readme
-* Introduction
+# Introduction
 Small Crate to infer various media containers.
 Works by reading Magic Bytes.
 
-* Supported Containers
+# Supported Containers
 - [X] MKV
 - [X] ASF
 - [X] GXF
@@ -16,9 +15,10 @@ Works by reading Magic Bytes.
 - [X] Tivo PS
 - [X] MXF
 
-* Examples
-** Get Container type from starting bytes
-#+begin_src rust
+# Examples
+## Get Container type from starting bytes
+
+``` rust
 let buf = [0x1a, 0x45, 0xdf, 0xa3, 0, 1];
 let kind = media_infer::ContainerType::from_bytes(&buf);
 
@@ -31,16 +31,16 @@ use std::path::PathBuf;
 
 let file_path = PathBuf::from("some.abc");
 let kind = media_infer::ContainerType::from_file_path(&file_path);
-#+end_src
+```
+## Get Container type from open file
 
-** Get Container type from open file
-#+begin_src rust
+```rust
 use std::fs::File;
 
 let mut file = File::open("some.abc").unwrap();
 let kind = media_infer::ContainerType::from_file(&mut file);
-#+end_src
+```
 
-* Resources
-- [[https://www.garykessler.net/library/file_sigs.html]]
-- [[https://en.wikipedia.org/wiki/List_of_file_signatures]]
+# Resources
+- [Garykessler](https://www.garykessler.net/library/file_sigs.html)
+- [Wikipedia](https://en.wikipedia.org/wiki/List_of_file_signatures)

@@ -5,8 +5,8 @@ authors = ["Ayush Singh <ayushsingh1325@gmail.com>"]
 description = "Small Crate to infer various media containers. Works by reading Magic Bytes."
 edition = "2018"
 license = "MIT"
-license-file = "LICENSE.org"
-readme = "README.org"
+license-file = "LICENSE.txt"
+readme = "README.md"
 repository = "https://github.com/Ayush1325/media_infer"
 keywords = ["media", "container", "video", "magic-bytes"]
 

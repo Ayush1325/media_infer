@@ -1,6 +1,6 @@
 [package]
 name = "media_infer"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Ayush Singh <ayushsingh1325@gmail.com>"]
 description = "Small Crate to infer various media containers. Works by reading Magic Bytes."
 edition = "2018"

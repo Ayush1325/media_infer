@@ -1,7 +1,6 @@
 #+TITLE: Readme
 * Introduction
 Small Crate to infer various media containers.
-Designed for use with CCExtractor.
 Works by reading Magic Bytes.
 
 * Supported Containers

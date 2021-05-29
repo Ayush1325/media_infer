@@ -1,6 +1,8 @@
 /*!
-Small Crate to infer various media containers.
-Designed for use with CCExtractor.
+Small Crate to infer various media containers by magic bytes.
+More about Magic bytes can be found here:
+- [Wikipedia](https://en.wikipedia.org/wiki/List_of_file_signatures)
+- [GCK'S FILE SIGNATURES TABLE](https://www.garykessler.net/library/file_sigs.html)
 
 # Examples
 ## Get Container type from starting bytes
@@ -37,18 +39,30 @@ use std::str::FromStr;
 /// Does not contain Unknown. Methods throw error if container cannot be identified.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum ContainerType {
+    /// Matroska stream file
     MKV,
+    /// Advanced Systems Format
     ASF,
+    /// General eXchange Format
     GXF,
+    /// Windows Recorded TV Show
     WTV,
+    /// CCExtractor Format
     RCWT,
+    /// MPEG-4
     MP4,
+    /// Transport Stream
     TS,
+    /// Program Stream Stream
     PS,
+    /// Material Exchange Format
     MXF,
+    /// MPEG-2 Part 1 Transport
     M2TS,
+    /// TIVO Program Stream
     TivoPS,
     McPoodlesRaw,
+    /// Elementary Stream
     ES,
 }
 
